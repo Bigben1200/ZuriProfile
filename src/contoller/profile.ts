@@ -8,25 +8,21 @@ export const getProfileDetails = (
   const { slack_name } = req.query;
   const { track } = req.query;
 
-  // Get the current day of the week
-  const daysOfWeek = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
+  // Get the current UTC time
   const currentUTC = new Date();
-  const currentDayOfWeek = daysOfWeek[currentUTC.getUTCDay()];
 
-  const currentDateTimeISO = currentUTC.toISOString();
+  // Format the UTC time as desired (e.g., "YYYY-MM-DD HH:MM:SS UTC")
+  const currentDateTime = `${currentUTC.getUTCFullYear()}-${padZero(
+    currentUTC.getUTCMonth() + 1
+  )}-${padZero(currentUTC.getUTCDate())} ${padZero(
+    currentUTC.getUTCHours()
+  )}:${padZero(currentUTC.getUTCMinutes())}:${padZero(
+    currentUTC.getUTCSeconds()
+  )} UTC`;
 
   const slackProfile = {
     slack_name: slack_name,
-    current_day: currentDayOfWeek,
-    utc_time: currentDateTimeISO,
+    utc_time: currentDateTime,
     track: track,
     github_file_url: `https://github.com/Bigben1200/ZuriProfile/blob/main/src/app.ts`,
     github_repo_url: `https://github.com/Bigben1200/ZuriProfile`,
@@ -41,3 +37,8 @@ export const getProfileDetails = (
     next(error);
   }
 };
+
+// Function to pad single digits with leading zeros
+function padZero(num: number) {
+  return num < 10 ? `0${num}` : num;
+}
