@@ -23,7 +23,7 @@ export const getProfileDetails = (
   const utcSeconds = padZero(currentUTC.getUTCSeconds());
 
   const currentDateTime = `${utcYear}-${utcMonth}-${utcDay}T${utcHours}:${utcMinutes}:${utcSeconds}Z`;
-
+  const now = new Date().toISOString().slice(0, 19) + "Z";
   // Get the current day of the week
   const daysOfWeek = [
     "Sunday",
@@ -41,8 +41,8 @@ export const getProfileDetails = (
     current_day: currentDayOfWeek,
     utc_time: currentDateTime,
     track: track,
-    github_file_url: `https://github.com/Bigben1200/SlackAPI/blob/main/src/app.ts`,
-    github_repo_url: `https://github.com/Bigben1200/SlackAPI`,
+    github_file_url: `https://github.com/Bigben1200/ZuriProfile/blob/main/src/app.ts`,
+    github_repo_url: `https://github.com/Bigben1200/ZuriProfile`,
     status_code: 200,
   };
 
