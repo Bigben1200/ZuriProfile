@@ -8,33 +8,26 @@ export const getProfileDetails = (
   const { slack_name } = req.query;
   const { track } = req.query;
 
-  // Get the current UTC time
+  // Get the current day of the week
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const currentUTC = new Date();
+  const currentDayOfWeek = daysOfWeek[currentUTC.getUTCDay()];
 
-  // Validate that the current time is within +/-2 seconds of the desired format
-  const allowedDifferenceInSeconds = 2;
-  const desiredFormat = `${currentUTC.getUTCFullYear()}-${padZero(
-    currentUTC.getUTCMonth() + 1
-  )}-${padZero(currentUTC.getUTCDate())}T${padZero(
-    currentUTC.getUTCHours()
-  )}:${padZero(currentUTC.getUTCMinutes())}:${padZero(
-    currentUTC.getUTCSeconds()
-  )}Z`;
-  const currentTimeInDesiredFormat = currentUTC.toISOString();
-  const timeDifferenceInSeconds = Math.abs(
-    (new Date(desiredFormat).getTime() - currentUTC.getTime()) / 1000
-  );
-
-  if (timeDifferenceInSeconds > allowedDifferenceInSeconds) {
-    // The current time is outside the allowed range
-    return res
-      .status(500)
-      .json({ error: "Current time is outside the allowed range" });
-  }
+  // Create the UTC time in the specified format
+  const currentDate = currentUTC.toISOString().slice(0, 19) + "Z";
 
   const slackProfile = {
     slack_name: slack_name,
-    utc_time: currentTimeInDesiredFormat,
+    current_day: currentDayOfWeek,
+    utc_time: currentDate,
     track: track,
     github_file_url: `https://github.com/Bigben1200/ZuriProfile/blob/main/src/app.ts`,
     github_repo_url: `https://github.com/Bigben1200/ZuriProfile`,
@@ -42,15 +35,8 @@ export const getProfileDetails = (
   };
 
   try {
-    const formattedResponse = JSON.stringify(slackProfile, null, 2);
-    res.set("Content-Type", "application/json");
-    res.send(formattedResponse);
+    res.send(slackProfile);
   } catch (error) {
     next(error);
   }
 };
-
-// Function to pad single digits with leading zeros
-function padZero(num: number) {
-  return num < 10 ? `0${num}` : num;
-}

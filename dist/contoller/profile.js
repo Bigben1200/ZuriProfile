@@ -16,20 +16,19 @@ const getProfileDetails = (req, res, next) => {
     ];
     const currentUTC = new Date();
     const currentDayOfWeek = daysOfWeek[currentUTC.getUTCDay()];
-    const currentDateTimeISO = currentUTC.toISOString();
+    // Create the UTC time in the specified format
+    const currentDate = currentUTC.toISOString().slice(0, 19) + "Z";
     const slackProfile = {
         slack_name: slack_name,
         current_day: currentDayOfWeek,
-        utc_time: currentDateTimeISO,
+        utc_time: currentDate,
         track: track,
         github_file_url: `https://github.com/Bigben1200/ZuriProfile/blob/main/src/app.ts`,
         github_repo_url: `https://github.com/Bigben1200/ZuriProfile`,
         status_code: 200,
     };
     try {
-        const formattedResponse = JSON.stringify(slackProfile, null, 2);
-        res.set("Content-Type", "application/json");
-        res.send(formattedResponse);
+        res.send(slackProfile);
     }
     catch (error) {
         next(error);
