@@ -8,22 +8,6 @@ export const getProfileDetails = (
   const { slack_name } = req.query;
   const { track } = req.query;
 
-  // Function to pad single digits with leading zeros
-  function padZero(num: number) {
-    return num < 10 ? `0${num}` : num;
-  }
-
-  // Get the current UTC time
-  const currentUTC = new Date();
-  const utcYear = currentUTC.getUTCFullYear();
-  const utcMonth = padZero(currentUTC.getUTCMonth() + 1); // Months are zero-indexed
-  const utcDay = padZero(currentUTC.getUTCDate());
-  const utcHours = padZero(currentUTC.getUTCHours());
-  const utcMinutes = padZero(currentUTC.getUTCMinutes());
-  const utcSeconds = padZero(currentUTC.getUTCSeconds());
-
-  const currentDateTime = `${utcYear}-${utcMonth}-${utcDay}T${utcHours}:${utcMinutes}:${utcSeconds}Z`;
-  const now = new Date().toISOString().slice(0, 19) + "Z";
   // Get the current day of the week
   const daysOfWeek = [
     "Sunday",
@@ -34,12 +18,15 @@ export const getProfileDetails = (
     "Friday",
     "Saturday",
   ];
+  const currentUTC = new Date();
   const currentDayOfWeek = daysOfWeek[currentUTC.getUTCDay()];
+
+  const currentDateTimeISO = currentUTC.toISOString();
 
   const slackProfile = {
     slack_name: slack_name,
     current_day: currentDayOfWeek,
-    utc_time: currentDateTime,
+    utc_time: currentDateTimeISO,
     track: track,
     github_file_url: `https://github.com/Bigben1200/ZuriProfile/blob/main/src/app.ts`,
     github_repo_url: `https://github.com/Bigben1200/ZuriProfile`,
